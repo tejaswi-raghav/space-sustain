@@ -1,0 +1,18 @@
+# Exact pinned releases reviewed and built locally for this prototype.
+# Vercel's package-age policy would otherwise reject these new releases.
+minimumReleaseAgeExclude:
+  - '@cesium/core@0.1.1'
+  - '@cesium/engine@26.5.0'
+  - '@cesium/gltf@0.1.1'
+  - '@cesium/widgets@16.3.1'
+  - '@next/env@16.4.4'
+  - '@next/swc-darwin-arm64@16.4.4'
+  - '@next/swc-darwin-x64@16.4.4'
+  - '@next/swc-linux-arm64-gnu@16.4.4'
+  - '@next/swc-linux-arm64-musl@16.4.4'
+  - '@next/swc-linux-x64-gnu@16.4.4'
+  - '@next/swc-linux-x64-musl@16.4.4'
+  - '@next/swc-win32-arm64-msvc@16.4.4'
+  - '@next/swc-win32-x64-msvc@16.4.4'
+  - cesium@1.147.0
+  - next@16.4.4
