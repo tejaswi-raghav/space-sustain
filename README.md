@@ -4,7 +4,13 @@
 
 [Live site](https://space-sustain.vercel.app/) · [Mission Control](https://space-sustain.vercel.app/mission-control) · [Source](https://github.com/tejaswi-raghav/space-sustain)
 
-SpaceSustain is a cinematic geospatial prototype for exploring sustainability interventions in Dubai. It combines a real Cesium globe, mapped OpenStreetMap building footprints, district camera flights, a transparent solar calculation, and clearly labeled illustrative planning layers. The experience is designed for the Supernova WSW 2026 open innovation hackathon.
+SpaceSustain is a cinematic geospatial prototype for exploring sustainability interventions in Dubai. It combines a real Cesium globe, NASA Blue Marble orbital imagery, mapped OpenStreetMap building footprints, district camera flights, a transparent solar calculation, and clearly labeled illustrative planning layers. The experience is designed for the Supernova WSW 2026 open innovation hackathon.
+
+The V3 experience moves through **Observe → Understand → Engineer → The Future**. Its orbital camera makes a staged descent toward Dubai before opening Mission Control. On smaller screens, the district list and inspector become independent controls over the same interactive globe.
+
+![SpaceSustain V3 orbital hero](docs/v3-after-home.png)
+
+Visual comparison: [hero before](docs/v3-before-home.png) · [hero after](docs/v3-after-home.png) · [Mission Control before](docs/v3-before-mission.png) · [Mission Control after](docs/v3-after-mission.png).
 
 ## Explore the prototype
 
@@ -19,7 +25,8 @@ SpaceSustain is a cinematic geospatial prototype for exploring sustainability in
 | Element | Status | Source or method |
 | --- | --- | --- |
 | Globe, geography, coordinates | Real | CesiumJS WGS84 globe; Dubai district coordinates |
-| Streets and base imagery | Real map tiles | © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright), ODbL |
+| Orbital imagery | Real composite | [NASA GIBS Blue Marble Next Generation](https://nasa-gibs.github.io/gibs-api-docs/access-basics/), shown at global scale |
+| Streets and city imagery | Real map tiles | © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright), ODbL; a stylized street-map view, not aerial photography |
 | Bundled building footprints | Real mapped geometry | Small OSM API snapshots in `public/data/`, retrieved by `scripts/fetch_osm_buildings.py` |
 | Building height | Mixed | OSM `height` tag where present; otherwise `building:levels × 3.2 m` or a 14 m *visual fallback*. The source is shown in the inspector. |
 | Optional global 3D Buildings | Real 3D Tiles | Cesium OSM Buildings via Cesium ion, subject to an access token and its terms |
@@ -32,7 +39,7 @@ The roof footprint is a 2D OSM polygon, not a roof survey. Geometry, usable area
 ## Stack
 
 - Next.js App Router, React, TypeScript, Tailwind CSS
-- CesiumJS globe and browser-only 3D scene; bundled Cesium workers and assets
+- CesiumJS globe and browser-only 3D scene; NASA orbital tiles, OSM city tiles, bundled Cesium workers and assets
 - GSAP ScrollTrigger for the descent and chapter transitions; Motion for UI transitions
 - Lucide icons; responsive panels; reduced-motion support
 - GeoJSON snapshots from OpenStreetMap API, stored locally for reliable demo use

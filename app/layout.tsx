@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import './v3.css';
 import 'cesium/Build/Cesium/Widgets/widgets.css';
 
 export const metadata: Metadata = {

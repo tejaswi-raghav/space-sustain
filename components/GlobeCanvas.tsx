@@ -18,7 +18,7 @@ export type TokenStatus = 'checking' | 'missing' | 'active' | 'error';
 
 export default function GlobeCanvas({
   target, flightKey = 0, mode = 'story', layers = [], futureMode = false,
-  onDistrictSelect, onBuildingSelect, onCameraChange, onStatusChange, onTokenStatusChange,
+  onDistrictSelect, onBuildingSelect, onCameraChange, onStatusChange, onTokenStatusChange, onFlightComplete,
 }: {
   target: SceneId; flightKey?: number; mode?: 'story' | 'control'; layers?: LayerId[]; futureMode?: boolean;
   onDistrictSelect?: (id: DistrictId) => void;
@@ -26,6 +26,7 @@ export default function GlobeCanvas({
   onCameraChange?: (telemetry: CameraTelemetry) => void;
   onStatusChange?: (status: GlobeStatus) => void;
   onTokenStatusChange?: (status: TokenStatus) => void;
+  onFlightComplete?: (target: SceneId) => void;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const creditsRef = useRef<HTMLDivElement>(null);
@@ -36,10 +37,11 @@ export default function GlobeCanvas({
   const overlayRef = useRef<Entity[]>([]);
   const selectedIdRef = useRef<string | null>(null);
   const targetRef = useRef<SceneId>(target);
+  const flightSequenceRef = useRef(0);
   const lastCameraReportRef = useRef(0);
-  const latestRef = useRef({ target, layers, futureMode, mode, onDistrictSelect, onBuildingSelect, onCameraChange, onStatusChange, onTokenStatusChange });
+  const latestRef = useRef({ target, layers, futureMode, mode, onDistrictSelect, onBuildingSelect, onCameraChange, onStatusChange, onTokenStatusChange, onFlightComplete });
   const [status, setStatus] = useState<GlobeStatus>('loading');
-  latestRef.current = { target, layers, futureMode, mode, onDistrictSelect, onBuildingSelect, onCameraChange, onStatusChange, onTokenStatusChange };
+  latestRef.current = { target, layers, futureMode, mode, onDistrictSelect, onBuildingSelect, onCameraChange, onStatusChange, onTokenStatusChange, onFlightComplete };
 
   const reportStatus = useCallback((next: GlobeStatus) => { setStatus(next); latestRef.current.onStatusChange?.(next); }, []);
 
@@ -60,9 +62,9 @@ export default function GlobeCanvas({
         const isSelected = entity.id === selectedIdRef.current;
         const solarSample = enabled.includes('solar') && (meta?.roofAreaM2 ?? 0) > 450 && index % 3 === 0;
         const coolRoof = proposed && index % 7 === 0;
-        const color = isSelected ? '#64e9f1' : solarSample ? '#50bbc3' : coolRoof ? '#d8e8e5' : '#1e5968';
+        const color = isSelected ? (enabled.includes('solar') ? '#e5ad63' : '#65dff2') : solarSample ? '#b8824a' : coolRoof ? '#d8e8e5' : '#164d5b';
         entity.polygon.material = new C.ColorMaterialProperty(C.Color.fromCssColorString(color).withAlpha(isSelected ? .92 : solarSample || coolRoof ? .86 : .67));
-        entity.polygon.outlineColor = new C.ConstantProperty(C.Color.fromCssColorString(isSelected ? '#e5ffff' : '#84b4bd').withAlpha(isSelected ? .9 : .48));
+        entity.polygon.outlineColor = new C.ConstantProperty(C.Color.fromCssColorString(isSelected ? '#fff0d9' : '#84b4bd').withAlpha(isSelected ? .95 : .48));
       });
     }
     if (activeTarget === 'orbit') { viewer.scene.requestRender(); return; }
@@ -84,7 +86,10 @@ export default function GlobeCanvas({
       add(viewer.entities.add({ polyline: { positions: C.Cartesian3.fromDegreesArray([district.longitude - .003, district.latitude - .002, district.longitude + .003, district.latitude + .002]), width: 4, material: C.Color.fromCssColorString('#67dde6').withAlpha(.85), clampToGround: true } }));
       const selected = selectedIdRef.current ? buildingRef.current.get(selectedIdRef.current) : undefined;
       if (selected && selected.district === currentId) {
-        add(viewer.entities.add({ polygon: { hierarchy: C.Cartesian3.fromDegreesArray(selected.coordinates.flat()), height: selected.heightM + .8, material: C.Color.fromCssColorString('#37dce9').withAlpha(.88), outline: true, outlineColor: C.Color.WHITE } }));
+        const points = selected.coordinates.slice(0, -1);
+        const center = points.reduce(([lon, lat], point) => [lon + point[0], lat + point[1]], [0, 0]).map((value) => value / points.length);
+        add(viewer.entities.add({ polygon: { hierarchy: C.Cartesian3.fromDegreesArray(selected.coordinates.flat()), height: selected.heightM + .7, extrudedHeight: selected.heightM + 1.9, material: C.Color.fromCssColorString('#e5ad63').withAlpha(.8), outline: true, outlineColor: C.Color.fromCssColorString('#fff1d4') } }));
+        add(viewer.entities.add({ position: C.Cartesian3.fromDegrees(center[0], center[1], selected.heightM + 18), label: { text: 'PROPOSED ARRAY / CONCEPT', font: '600 11px monospace', fillColor: C.Color.fromCssColorString('#ffdfa5'), showBackground: true, backgroundColor: C.Color.fromCssColorString('#10161b').withAlpha(.9), backgroundPadding: new C.Cartesian2(9, 6), disableDepthTestDistance: Number.POSITIVE_INFINITY } }));
       }
     }
     viewer.scene.requestRender();
@@ -143,21 +148,46 @@ export default function GlobeCanvas({
     if (!viewer || !C) return;
     if (targetRef.current !== destination) selectedIdRef.current = null;
     targetRef.current = destination;
+    const sequence = ++flightSequenceRef.current;
     const place = destination === 'orbit' ? DUBAI_ORBIT : destination === 'downtown' ? DOWNTOWN : districtById(destination);
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const flightDuration = reduced ? 0 : duration ?? (destination === 'orbit' ? 3.4 : 3.1);
+    const complete = () => {
+      if (sequence !== flightSequenceRef.current) return;
+      viewer.scene.requestRender();
+      latestRef.current.onFlightComplete?.(destination);
+    };
     if (destination === 'orbit') {
       viewer.camera.flyTo({
         destination: C.Cartesian3.fromDegrees(place.longitude, place.latitude, place.altitude),
         orientation: { heading: C.Math.toRadians(place.heading), pitch: C.Math.toRadians(place.pitch), roll: 0 },
         duration: flightDuration,
-        complete: () => viewer.scene.requestRender(),
+        complete,
       });
     } else {
-      viewer.camera.flyToBoundingSphere(
-        new C.BoundingSphere(C.Cartesian3.fromDegrees(place.longitude, place.latitude, 0), 1),
-        { offset: new C.HeadingPitchRange(C.Math.toRadians(place.heading), C.Math.toRadians(place.pitch), place.altitude), duration: flightDuration, complete: () => viewer.scene.requestRender() },
-      );
+      const finalFlight = () => {
+        if (sequence !== flightSequenceRef.current) return;
+        viewer.camera.flyToBoundingSphere(
+          new C.BoundingSphere(C.Cartesian3.fromDegrees(place.longitude, place.latitude, 0), 1),
+          { offset: new C.HeadingPitchRange(C.Math.toRadians(place.heading), C.Math.toRadians(place.pitch), place.altitude), duration: flightDuration, complete },
+        );
+      };
+      if (latestRef.current.mode === 'story' && destination === 'downtown' && !reduced && viewer.camera.positionCartographic.height > 600_000) {
+        viewer.camera.flyTo({
+          destination: C.Cartesian3.fromDegrees(54.55, 25.55, 2_650_000),
+          orientation: { heading: C.Math.toRadians(18), pitch: C.Math.toRadians(-78), roll: 0 },
+          duration: 1.5,
+          complete: () => {
+            if (sequence !== flightSequenceRef.current) return;
+            viewer.camera.flyTo({
+              destination: C.Cartesian3.fromDegrees(55.15, 25.25, 165_000),
+              orientation: { heading: C.Math.toRadians(24), pitch: C.Math.toRadians(-62), roll: 0 },
+              duration: 1.55,
+              complete: finalFlight,
+            });
+          },
+        });
+      } else finalFlight();
     }
     if (destination !== 'orbit') {
       const first = loadedRef.current.get(destination)?.[0];
@@ -175,6 +205,7 @@ export default function GlobeCanvas({
     if (!containerRef.current || !creditsRef.current) return;
     let cancelled = false;
     let resizeObserver: ResizeObserver | undefined;
+    let orbitalTimer: ReturnType<typeof setInterval> | undefined;
     let viewer: Viewer | undefined;
     (async () => {
       (window as Window & { CESIUM_BASE_URL?: string }).CESIUM_BASE_URL = '/cesium/';
@@ -193,10 +224,29 @@ export default function GlobeCanvas({
       });
       viewerRef.current = viewer;
       const currentViewer = viewer;
-      currentViewer.imageryLayers.add(new C.ImageryLayer(new C.OpenStreetMapImageryProvider({ url: 'https://tile.openstreetmap.org/' })));
-      currentViewer.scene.globe.baseColor = C.Color.fromCssColorString('#10232c');
-      currentViewer.scene.backgroundColor = C.Color.fromCssColorString('#050c14');
+      const earthLayer = currentViewer.imageryLayers.addImageryProvider(new C.WebMapTileServiceImageryProvider({
+        url: 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/BlueMarble_NextGeneration/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg',
+        layer: 'BlueMarble_NextGeneration', style: 'default', format: 'image/jpeg',
+        tileMatrixSetID: 'GoogleMapsCompatible_Level8', maximumLevel: 8,
+        credit: new C.Credit('NASA GIBS / Blue Marble Next Generation'),
+      }));
+      earthLayer.brightness = 1.05;
+      earthLayer.contrast = 1.08;
+      earthLayer.saturation = 1.12;
+      const streetLayer = currentViewer.imageryLayers.addImageryProvider(new C.OpenStreetMapImageryProvider({ url: 'https://tile.openstreetmap.org/' }));
+      streetLayer.show = false;
+      streetLayer.brightness = .5;
+      streetLayer.contrast = 1.48;
+      streetLayer.saturation = .38;
+      currentViewer.scene.globe.baseColor = C.Color.fromCssColorString('#071522');
+      currentViewer.scene.backgroundColor = C.Color.fromCssColorString('#05070a');
       currentViewer.scene.globe.showGroundAtmosphere = true;
+      currentViewer.scene.globe.enableLighting = true;
+      currentViewer.scene.globe.dynamicAtmosphereLighting = true;
+      currentViewer.scene.globe.atmosphereSaturationShift = -.18;
+      currentViewer.scene.fog.enabled = true;
+      currentViewer.clock.currentTime = C.JulianDate.fromIso8601('2026-11-03T09:00:00Z');
+      currentViewer.clock.shouldAnimate = false;
       currentViewer.scene.screenSpaceCameraController.minimumZoomDistance = 170;
       currentViewer.scene.screenSpaceCameraController.maximumZoomDistance = 16_000_000;
       currentViewer.scene.screenSpaceCameraController.enableTilt = true;
@@ -220,17 +270,41 @@ export default function GlobeCanvas({
             selectedIdRef.current = id;
             latestRef.current.onBuildingSelect?.(building);
             refreshOverlays();
+            const points = building.coordinates.slice(0, -1);
+            const [longitude, latitude] = points.reduce(([lon, lat], point) => [lon + point[0], lat + point[1]], [0, 0]).map((value) => value / points.length);
+            currentViewer.camera.flyToBoundingSphere(
+              new C.BoundingSphere(C.Cartesian3.fromDegrees(longitude, latitude, building.heightM), 1),
+              { offset: new C.HeadingPitchRange(C.Math.toRadians(28), C.Math.toRadians(-42), Math.max(480, Math.sqrt(building.roofAreaM2) * 4)), duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1.8 },
+            );
           }
         }
       }, C.ScreenSpaceEventType.LEFT_CLICK);
-      currentViewer.camera.changed.addEventListener(() => {
-        if (Date.now() - lastCameraReportRef.current < 350) return;
-        lastCameraReportRef.current = Date.now();
+      const reportCamera = () => {
         const pos = currentViewer.camera.positionCartographic;
         latestRef.current.onCameraChange?.({ latitude: C.Math.toDegrees(pos.latitude), longitude: C.Math.toDegrees(pos.longitude), altitudeM: pos.height, heading: C.Math.toDegrees(currentViewer.camera.heading) });
+      };
+      currentViewer.camera.changed.addEventListener(() => {
+        const altitude = currentViewer.camera.positionCartographic.height;
+        const streetVisible = altitude < 250_000;
+        if (streetLayer.show !== streetVisible) {
+          streetLayer.show = streetVisible;
+          currentViewer.scene.requestRender();
+        }
+        if (Date.now() - lastCameraReportRef.current < 350) return;
+        lastCameraReportRef.current = Date.now();
+        reportCamera();
       });
+      currentViewer.camera.moveEnd.addEventListener(reportCamera);
       resizeObserver = new ResizeObserver(() => { if (!currentViewer.isDestroyed()) { currentViewer.resize(); currentViewer.scene.requestRender(); } });
       resizeObserver.observe(containerRef.current);
+      if (latestRef.current.mode === 'story' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        orbitalTimer = setInterval(() => {
+          if (targetRef.current === 'orbit' && !currentViewer.isDestroyed()) {
+            currentViewer.camera.rotateRight(.000045);
+            currentViewer.scene.requestRender();
+          }
+        }, 80);
+      }
       reportStatus('ready');
       flyTo(latestRef.current.target, latestRef.current.target === 'orbit' ? 0 : 3.5);
       latestRef.current.onTokenStatusChange?.(process.env.NEXT_PUBLIC_CESIUM_ION_TOKEN ? 'checking' : 'missing');
@@ -252,6 +326,7 @@ export default function GlobeCanvas({
     })().catch((error) => { console.error('Cesium initialization failed', error); if (!cancelled) reportStatus('webgl-error'); });
     return () => {
       cancelled = true;
+      if (orbitalTimer) clearInterval(orbitalTimer);
       resizeObserver?.disconnect();
       if (viewer && !viewer.isDestroyed()) viewer.destroy();
       viewerRef.current = null;

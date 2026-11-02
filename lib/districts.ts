@@ -25,7 +25,7 @@ export const DISTRICTS: District[] = [
 ];
 
 export const DOWNTOWN = { latitude: 25.1922, longitude: 55.2814, altitude: 1750, heading: 24, pitch: -42 };
-export const DUBAI_ORBIT = { latitude: 25.20, longitude: 55.28, altitude: 8_500_000, heading: 0, pitch: -90 };
+export const DUBAI_ORBIT = { latitude: 25.20, longitude: 55.28, altitude: 12_500_000, heading: 0, pitch: -90 };
 export const LAYERS: { id: LayerId; label: string; code: string; description: string; color: string }[] = [
   { id: 'solar', label: 'Solar opportunity', code: 'SOL', description: 'Sample roof highlighting based on mapped footprint area.', color: '#70e8ed' },
   { id: 'heat', label: 'Urban heat', code: 'UHI', description: 'Illustrative heat zones; no measured temperature layer.', color: '#e7a47d' },
