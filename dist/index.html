@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#07131a" />
+  <meta name="description" content="SpaceSustain is a satellite evidence prototype for trustworthy e-commerce sustainability claims." />
+  <title>SpaceSustain — Proof from above. Trust below.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="stars" aria-hidden="true"></div>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="SpaceSustain home"><span class="brand-mark">✦</span><span>SPACE<span class="brand-light">SUSTAIN</span></span></a>
+    <nav aria-label="Main navigation"><a href="#mission">Mission</a><a href="#marketplace">Marketplace</a><a href="#intelligence">Intelligence</a><a href="#method">Method</a></nav>
+    <a class="header-cta" href="#intelligence">Explore dashboard <span>↗</span></a>
+    <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+  </header>
+
+  <main id="top">
+    <section class="hero section-shell">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="live-dot"></span> SUPERNOVA WSW 2026 · OPEN INNOVATION PROTOTYPE</div>
+        <h1>Proof from <em>above.</em><br>Trust <em>below.</em></h1>
+        <p class="hero-lead">A new kind of marketplace where sustainability claims come with satellite evidence. Explore products, inspect the signals, and see what a Green Trust Score really means.</p>
+        <div class="hero-actions"><a class="button button-primary" href="#marketplace">Explore products <span>↗</span></a><a class="button button-ghost" href="#intelligence">View live demo <span>↗</span></a></div>
+        <div class="hero-note"><span class="orbit-symbol">◎</span><span>Built for the space between claims and proof.</span></div>
+      </div>
+      <div class="hero-art" aria-label="Illustration of Earth from orbit with supply chain signals">
+        <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><div class="planet"><div class="planet-glow"></div><div class="continent continent-one"></div><div class="continent continent-two"></div><div class="continent continent-three"></div><div class="planet-shade"></div></div>
+        <div class="satellite satellite-one">✧</div><div class="satellite satellite-two">✦</div>
+        <div class="hero-card hero-card-one"><span class="card-pip green"></span><small>FOREST SIGNAL</small><b>Vegetation stable</b><span class="card-line"></span></div>
+        <div class="hero-card hero-card-two"><span class="card-pip cyan"></span><small>WAREHOUSE HEAT</small><b>Within baseline</b><span class="card-line"></span></div>
+        <div class="coordinate coordinate-one">25°12′ N / 55°17′ E</div><div class="coordinate coordinate-two">ORBITAL VIEW 001</div>
+      </div>
+      <div class="hero-bottom"><span>01 / THE IDEA</span><span>SCROLL TO EXPLORE ↓</span></div>
+    </section>
+
+    <section class="ticker" aria-label="Evidence signals"><div>EARTH OBSERVATION <span>✧</span> AI ASSISTED ANALYSIS <span>✧</span> TRACEABLE PRODUCTS <span>✧</span> OPEN EVIDENCE <span>✧</span> EARTH OBSERVATION <span>✧</span> AI ASSISTED ANALYSIS <span>✧</span> TRACEABLE PRODUCTS <span>✧</span></div></section>
+
+    <section id="mission" class="mission section-shell section-pad">
+      <div class="section-intro"><span class="section-kicker">/ 01 — THE MISSION</span><h2>Green claims need<br><em>ground truth.</em></h2></div>
+      <div class="mission-body"><p>“Sustainable” is easy to print on a product page. It is much harder to prove across farms, warehouses, and offset forests. SpaceSustain turns remote sensing signals into a transparent, reviewable shopping experience.</p><div class="mission-grid"><div><span>01</span><b>See the source</b><small>Vegetation change around declared supply regions.</small></div><div><span>02</span><b>Check the footprint</b><small>Thermal context around fulfillment facilities.</small></div><div><span>03</span><b>Verify the offset</b><small>Forest persistence signals, with uncertainty shown.</small></div></div></div>
+    </section>
+
+    <section id="marketplace" class="market section-shell section-pad">
+      <div class="section-heading"><div><span class="section-kicker">/ 02 — THE MARKETPLACE</span><h2>Shop with the<br><em>whole picture.</em></h2></div><p>Illustrative products from a fictional brand. Open a product to rotate its 3D model and inspect the evidence behind its score.</p></div>
+      <div class="filter-row" role="group" aria-label="Product filters"><button class="filter active" data-filter="all">All products</button><button class="filter" data-filter="apparel">Apparel</button><button class="filter" data-filter="home">Home</button><button class="filter" data-filter="everyday">Everyday</button></div>
+      <div class="product-grid" id="product-grid"></div>
+      <div class="market-foot"><span>✧ Scores are illustrative prototype outputs, not certifications.</span><a href="#method">How scoring works ↗</a></div>
+    </section>
+
+    <section id="intelligence" class="intelligence section-pad">
+      <div class="section-shell">
+        <div class="section-heading"><div><span class="section-kicker">/ 03 — EARTH INTELLIGENCE</span><h2>The planet is<br><em>the receipt.</em></h2></div><p>Explore an example audit for fictional merchant <strong>Orbital Goods</strong>. Change a signal to see how the score responds.</p></div>
+        <div class="dashboard">
+          <div class="dashboard-top"><div class="dash-identity"><span class="dash-logo">✦</span><div><small>BRAND AUDIT / DEMO</small><h3>Orbital Goods</h3></div></div><div class="dash-status"><span class="live-dot"></span> SATELLITE EVIDENCE VIEW <span class="demo-tag">ILLUSTRATIVE</span></div></div>
+          <div class="dashboard-grid"><div class="map-panel"><div class="panel-head"><div><small>GEOSPATIAL VIEW</small><h4>Evidence locations</h4></div><span class="panel-code">MAP / 001</span></div><div id="map" role="img" aria-label="Interactive map of example supply chain locations"><div class="map-fallback">Loading satellite map…<small>Open map requires network access.</small></div></div><div class="map-legend"><span><i class="legend-dot green"></i> Sourcing</span><span><i class="legend-dot cyan"></i> Warehouse</span><span><i class="legend-dot gold"></i> Offset forest</span></div><p class="map-source">Basemap: OpenStreetMap · Optional imagery: NASA GIBS MODIS Terra true color, 2024-09-01. Markers are illustrative.</p></div>
+          <div class="score-panel"><div class="panel-head"><div><small>TRUST ANALYSIS</small><h4>Green Trust Score</h4></div><span class="panel-code">MODEL / 001</span></div><div class="score-main"><div class="score-ring"><span id="score-number">78</span><small>/ 100</small></div><div><div class="score-label" id="score-label">Promising, with gaps</div><p id="score-summary">Three observable signals support the claim. Supplier provenance still needs independent documentation.</p></div></div><div class="metric-list" id="metric-list"></div><div class="score-foot">Model output is a weighted demo heuristic. It does not measure product life cycle emissions or certify compliance.</div></div></div>
+          <div class="scenario-panel"><div class="scenario-copy"><span class="section-kicker">INTERACTIVE MODEL</span><h4>What changes the score?</h4><p>Select a scenario to simulate one remote sensing anomaly. The model recalculates immediately and shows the reason.</p></div><div class="scenario-buttons" role="group" aria-label="Audit scenarios"><button class="scenario active" data-scenario="baseline">Baseline evidence</button><button class="scenario" data-scenario="forest">Forest loss detected</button><button class="scenario" data-scenario="heat">Warehouse heat spike</button><button class="scenario" data-scenario="offset">Offset growth stalls</button></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="method" class="method section-shell section-pad"><div class="section-intro"><span class="section-kicker">/ 04 — THE METHOD</span><h2>Signals, not<br><em>spin.</em></h2></div><div class="method-content"><p>Our prototype combines three observable Earth signals with declared supplier and facility locations. A prototype anomaly model flags changes; a transparent rules layer turns those flags into an explainable score.</p><div class="method-steps"><article><span>01 / SOURCE</span><h3>Vegetation health</h3><p>Compare NDVI or forest cover change in declared sourcing zones using Sentinel-2 or Landsat imagery.</p></article><article><span>02 / FACILITY</span><h3>Surface heat context</h3><p>Compare land surface temperature and roof reflectance against nearby reference areas. Facility energy use needs separate data.</p></article><article><span>03 / OFFSET</span><h3>Forest persistence</h3><p>Use optical and radar time series to flag canopy loss or stalled growth. Carbon removal needs field and carbon accounting evidence.</p></article></div><div class="method-callout"><b>Prototype boundary</b><span>The current site uses scenario data and illustrative product records. The map can load an actual NASA imagery layer, but no brand, product, supplier, or offset has been independently verified.</span></div></div></section>
+    <section class="cta-section section-shell"><div><span class="section-kicker">BUILT FOR SUPERNOVA WSW 2026</span><h2>Make the next claim<br><em>one you can show.</em></h2><p>Explore the code, 3D assets, score logic, and a clear path to real satellite data integration.</p><a class="button button-primary" href="https://github.com/tejaswi-raghav/space-sustain" target="_blank" rel="noopener" id="repo-link">View project repository ↗</a></div><div class="cta-orb" aria-hidden="true">✦</div></section>
+  </main>
+  <footer class="site-footer section-shell"><a class="brand" href="#top"><span class="brand-mark">✦</span><span>SPACE<span class="brand-light">SUSTAIN</span></span></a><span>Earth is the evidence. · Hackathon prototype, 2026</span><a href="#top">Back to orbit ↑</a></footer>
+
+  <dialog id="product-dialog" class="product-dialog" aria-labelledby="dialog-title"><button class="dialog-close" aria-label="Close product details">×</button><div class="dialog-layout"><div class="model-area"><div class="model-heading"><span>INTERACTIVE PRODUCT MODEL</span><span>DRAG TO ROTATE ↻</span></div><div id="model-container"><div class="model-placeholder">✦</div></div><div class="model-controls"><button id="rotate-left" aria-label="Rotate model left">←</button><span>360° VIEW · <a id="model-download" href="#" download>DOWNLOAD 3D MODEL ↓</a></span><button id="rotate-right" aria-label="Rotate model right">→</button></div></div><div class="dialog-info"><span class="section-kicker">ORBITAL GOODS / PRODUCT FILE</span><h2 id="dialog-title"></h2><p id="dialog-description"></p><div class="detail-price"><b id="dialog-price"></b><span id="dialog-score"></span></div><div class="detail-divider"></div><h3>What the evidence says</h3><div id="dialog-evidence"></div><div class="detail-note">Illustrative scenario data. A satellite signal alone cannot verify a product's full environmental impact.</div><button class="button button-primary detail-button" id="detail-action">Inspect brand dashboard ↗</button></div></div></dialog>
+</body>
+</html>
