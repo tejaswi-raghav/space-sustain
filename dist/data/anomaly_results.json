@@ -1,0 +1,35 @@
+{
+  "model": "standardized k-nearest-neighbor distance",
+  "training_records": 10,
+  "synthetic_data": true,
+  "results": [
+    {
+      "scenario": "baseline_evidence",
+      "anomaly": false,
+      "anomaly_score": 1.09,
+      "threshold": 1.74,
+      "dominant_signal": "warehouse surface heat"
+    },
+    {
+      "scenario": "forest_loss",
+      "anomaly": true,
+      "anomaly_score": 15.83,
+      "threshold": 1.74,
+      "dominant_signal": "sourcing vegetation"
+    },
+    {
+      "scenario": "warehouse_heat_spike",
+      "anomaly": true,
+      "anomaly_score": 19.49,
+      "threshold": 1.74,
+      "dominant_signal": "warehouse surface heat"
+    },
+    {
+      "scenario": "offset_growth_stalls",
+      "anomaly": true,
+      "anomaly_score": 18.81,
+      "threshold": 1.74,
+      "dominant_signal": "offset canopy change"
+    }
+  ]
+}
