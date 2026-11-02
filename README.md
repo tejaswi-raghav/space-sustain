@@ -1,12 +1,22 @@
 # SpaceSustain
 
-**Proof from above. Trust below.**  [Live private preview](https://spacesustain-wsw-2026.f20240173.chatgpt.site) · [GitHub repository](https://github.com/tejaswi-raghav/space-sustain)
+**Proof from above. Trust below.** · [Open the public demo](https://space-sustain.vercel.app/) · [Browse the repository](https://github.com/tejaswi-raghav/space-sustain)
 
 A Supernova WSW 2026 open innovation prototype in AI, Earth observation, and e-commerce.
+
+![SpaceSustain landing page](docs/landing-preview.png)
 
 SpaceSustain addresses a real shopping problem: sustainability claims are difficult to check across raw-material sources, fulfillment facilities, and carbon offset projects. The prototype pairs a fictional storefront with an explainable **Green Trust Score** and a satellite imagery map. Shoppers can inspect each product, rotate a 3D concept model, and review the signal behind the claim.
 
 > **Prototype integrity:** Orbital Goods, its products, location markers, signal values, and scores are fictional examples. The map can load real NASA MODIS Terra imagery for 2024-09-01, but the score is not computed from that imagery. This is not a sustainability certification, carbon calculation, or audit of any real company.
+
+## One-minute walkthrough
+
+1. Open the [public demo](https://space-sustain.vercel.app/) and choose **Explore products**.
+2. Filter the fictional catalog; open a product to rotate its 3D model and inspect its evidence card.
+3. Choose **Intelligence** to see the dated NASA imagery context layer and three illustrative supply-chain locations.
+4. Switch between baseline, forest loss, warehouse heat, and offset scenarios. The Green Trust Score and model alert update.
+5. Read **Method** to see what the signals can and cannot establish.
 
 ## Demo features
 
@@ -14,6 +24,7 @@ SpaceSustain addresses a real shopping problem: sustainability claims are diffic
 - Expanded product views with rotatable browser 3D models and downloadable original `.obj` concept assets.
 - Interactive evidence map with an OpenStreetMap basemap and optional NASA GIBS MODIS Terra true-color overlay. Example sourcing, warehouse, and forest markers are visibly identified as illustrative.
 - Explainable score dashboard with three scenario controls: forest loss, warehouse heat spike, and stalled offset growth.
+- A working k-nearest-neighbor anomaly detector trained on synthetic observations, with its generated alerts displayed in the dashboard.
 - Clear methodology and limitations shown in the interface.
 
 ## Run locally
@@ -40,6 +51,7 @@ scripts/
   generate_models.py  Rebuilds the OBJ files
   anomaly_model.py   Trains and evaluates a small k-nearest-neighbor detector
 data/demo_signals.csv  Explicitly synthetic training and scenario observations
+vercel.json            Public Vercel static output configuration
 .openai/hosting.json   Private Sites deployment configuration
 ```
 
@@ -79,6 +91,10 @@ The model correctly leaves the baseline unflagged and flags the forest, heat, an
 - [Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/) — proposed Sentinel-1/2 source.
 
 **Limitations:** MODIS true-color imagery is too coarse to verify individual warehouse roof efficiency. Surface temperature is not direct energy consumption. NDVI is not proof of legal sourcing, and forest growth does not itself prove carbon removals or offset additionality. Production scores need ground data, audit trails, calibration, and independent review.
+
+## Deployment
+
+The public Vercel project serves the contents of `dist/`, as set by `vercel.json`. Pushing to `main` triggers a production deployment. The same static site also has a private Sites preview. No API keys or database are required for the current demo.
 
 ## Hackathon submission fit
 
