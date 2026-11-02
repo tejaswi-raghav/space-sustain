@@ -1,3 +1,12 @@
 .DS_Store
+node_modules/
+.next/
+out/
+.vercel/
+public/cesium/
+*.tsbuildinfo
+.env
+.env.local
+.env.*.local
 __pycache__/
 *.pyc
