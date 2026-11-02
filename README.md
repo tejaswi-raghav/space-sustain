@@ -37,6 +37,8 @@ dist/
   models/*.obj      Downloadable original low-poly 3D concept models
 scripts/
   generate_models.py  Rebuilds the OBJ files
+  anomaly_model.py   Trains and evaluates a small k-nearest-neighbor detector
+data/demo_signals.csv  Explicitly synthetic training and scenario observations
 .openai/hosting.json   Private Sites deployment configuration
 ```
 
@@ -52,7 +54,13 @@ The demo scores three *observable signal categories* on a 0–100 scale:
 
 `score = round(0.40 × sourcing + 0.25 × warehouse + 0.35 × offset)`
 
-The current inputs are hard-coded demonstration values in `dist/app.js`. Scenario buttons change one input at a time. The “AI” label describes the planned anomaly-detection workflow; **no trained machine-learning model runs in this prototype**. In a production implementation, a model should flag anomalies with confidence intervals and retain image dates, cloud masks, sensor metadata, comparison areas, and human review decisions.
+The storefront inputs are hard-coded demonstration values in `dist/app.js`; its scenario buttons change one input at a time. The repository also includes a working, dependency-free **k-nearest-neighbor anomaly detector**. It trains on the synthetic vectors in `data/demo_signals.csv`, standardizes each signal, learns a threshold from leave-one-out distances, and identifies the dominant signal for each scenario. Run it with:
+
+```bash
+python3 scripts/anomaly_model.py
+```
+
+The model correctly leaves the baseline unflagged and flags the forest, heat, and offset scenarios. **It is not trained on real satellite observations and is not connected to the storefront score.** A production model should retain image dates, cloud masks, sensor metadata, comparison areas, confidence intervals, and human review decisions.
 
 ## Path to a real data prototype
 
