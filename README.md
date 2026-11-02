@@ -1,6 +1,8 @@
 # SpaceSustain
 
-**Proof from above. Trust below.**  [Live private preview](https://spacesustain-wsw-2026.f20240173.chatgpt.site) · [GitHub repository](https://github.com/tejaswi-raghav/space-sustain) A Supernova WSW 2026 open innovation prototype in AI, Earth observation, and e-commerce.
+**Proof from above. Trust below.**  [Live private preview](https://spacesustain-wsw-2026.f20240173.chatgpt.site) · [GitHub repository](https://github.com/tejaswi-raghav/space-sustain)
+
+A Supernova WSW 2026 open innovation prototype in AI, Earth observation, and e-commerce.
 
 SpaceSustain addresses a real shopping problem: sustainability claims are difficult to check across raw-material sources, fulfillment facilities, and carbon offset projects. The prototype pairs a fictional storefront with an explainable **Green Trust Score** and a satellite imagery map. Shoppers can inspect each product, rotate a 3D concept model, and review the signal behind the claim.
 
